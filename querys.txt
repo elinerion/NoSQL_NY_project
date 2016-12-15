@@ -1,0 +1,51 @@
+MATCH (f:Firehouse) -[:IsIn]-(b:Borough) return b.Borough, count(*) order by count(*) DESC
+* Brooklyn, Queens, Manhattan, Bronx, Staten Island
+
+
+
+MATCH (p:Population)-[:IsIn]-(b:Borough) return b.Borough, sum(p.Population) order by sum(p.Population)
+* Staten Island, Bronx, Manhattan, Queens, Brooklyn
+
+
+
+
+MATCH (n:MathsResult) RETURN n LIMIT 1
+MATCH (n:MathsResult)-[:IsIn]-(b:Borough) RETURN b.Borough, AVG(n.`Mean Scale Score`) order by AVG(n.`Mean Scale Score`) DESC
+* Queens, Staten Island, Manhattan, Brooklyn, Bronx
+
+MATCH (n:MathsResult)-[:IsIn]-(b:Borough) RETURN b.Borough,n.Demographic, AVG(n.`Mean Scale Score`) order by AVG(n.`Mean Scale Score`) DESC
+* Depending on the SEX, Manhattan and Brooklyn exchange place
+
+MATCH (n:MathsResult)-[:IsIn]-(b:Borough) WHERE n.Year="2012" RETURN b.Borough, AVG(n.`Mean Scale Score`) order by AVG(n.`Mean Scale Score`) DESC
+* Queens, Staten Island, Manhattan, Brooklyn, Bronx
+
+MATCH (n:MathsResult)-[:IsIn]-(b:Borough) WHERE n.Year="2006" RETURN b.Borough, AVG(n.`Mean Scale Score`) order by AVG(n.`Mean Scale Score`) DESC
+* Queens, Staten Island, Manhattan, Brooklyn, Bronx
+
+
+MATCH (r:Restaurant) return distinct r.`CuisineDesc` 
+*84 differents
+MATCH (r:Restaurant) Return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 10
+
+MATCH (r:Restaurant) WHERE r.CuisineDesc="French" return r.Borough, count(*) order by count(*) DESC
+* Manhattan, Brooklyn, Queens, Bronx
+
+MATCH (r:Restaurant) WHERE r.Borough="MANHATTAN" return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 5
+* American, Chinese, Italian, Japanese, Café
+
+MATCH (r:Restaurant) WHERE r.Borough="STATEN ISLAND" return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 6
+* American, Italian, Chinese, Pizza/Italian, Pizza, Mexican
+
+MATCH (r:Restaurant) WHERE r.Borough="BRONX" return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 5
+* American Chinese Latin Pizza Spanish
+
+MATCH (r:Restaurant) WHERE r.Borough="QUEENS" return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 5
+* American, Chinese, Latin, Pizza, Spanish
+
+MATCH (r:Restaurant) WHERE r.Borough="BROOKLYN" return r.CuisineDesc, count(*) order by count(*) DESC LIMIT 5
+* American, Chinese, Caribbean, Pizza, Mexican
+
+MATCH (r:Restaurant) WHERE r.CuisineDesc="French" Return r.Borough, AVG(r.Score) order by AVG(r.Score) DESC
+* Bronx, Manhattan, Brooklyn, Queens
+
+

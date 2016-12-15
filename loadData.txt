@@ -1,0 +1,75 @@
+
+LOAD CSV WITH HEADERS FROM "file:///borough.csv" AS row FIELDTERMINATOR ','
+CREATE (n:Borough) 
+SET n = row
+*Added 5 labels, created 5 nodes, set 10 properties, statement executed in 652 ms.
+
+LOAD CSV WITH HEADERS FROM "file:///firehouse.csv" AS row FIELDTERMINATOR ','
+CREATE (n:Firehouse) 
+SET n = row
+*Added 218 labels, created 218 nodes, set 654 properties, statement executed in 444 ms.
+
+LOAD CSV WITH HEADERS FROM "file:///mathsResult.csv" AS row FIELDTERMINATOR ','
+CREATE (n:MathsResult) 
+SET n = row,
+    n.Demographic = row.Demographic,
+    n.`Mean Scale Score` = toInt(row.`Mean Scale Score`),
+    n.Year = row.Year,
+    n.Grade = row.Grade,
+    n.`Number Tested` = toInt(row.`Number Tested`),
+    n.Id = row.Id
+*Added 490 labels, created 490 nodes, set 5390 properties, statement executed in 644 ms.
+
+LOAD CSV WITH HEADERS FROM "file:///population.csv" AS row FIELDTERMINATOR ','
+CREATE (n:Population) 
+SET n = row,
+    n.Id  = row.Id,
+    n.Year = row.Year,
+    n.`FIPS County Code` = row.`FIPS County Code`,
+    n.`NTA Code` = row.`NTA Code`,
+    n.`NTA Name` = row.`NTA Name`,
+    n.Population = toInt(row.Population)
+*Added 390 labels, created 390 nodes, set 4290 properties, statement executed in 474 ms
+
+LOAD CSV WITH HEADERS FROM "file:///restaurant.csv" AS row FIELDTERMINATOR ','
+CREATE (n:Restaurant) 
+SET n = row,
+    n.Dba = row.DBA,
+    n.Score = toInt(row.SCORE),
+    n.Building = row.BUILDING,
+    n.Borough = row.BORO,
+    n.CuisineDesc = row.`CUISINE DESCRIPTION`,
+    n.Grade = row.GRADE,
+    n.DateInspection = row.`INSPECTION DATE`,
+    n.Street = row.STREET,
+    n.Id = row.Id
+*Added 436411 labels, created 436411 nodes, set 7163354 properties, statement executed in 40790 ms.
+
+CREATE INDEX ON :Borough(Id)
+*Added 1 index, statement executed in 69 ms.
+CREATE INDEX ON :Firehouse(Id)
+*Added 1 index, statement executed in 48 ms.
+CREATE INDEX ON :MathsResult(Id)
+*Added 1 index, statement executed in 47 ms.
+CREATE INDEX ON :Population(Id)
+*Added 1 index, statement executed in 76 ms.
+CREATE INDEX ON :Restaurant(Id)
+*Added 1 index, statement executed in 133 ms.
+
+USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///firehouse_is_in.csv" AS row FIELDTERMINATOR  ','
+MATCH (b:Borough { id: row.boroughId}),(f:Firehouse { id: row.firehouseId})
+CREATE (f)-[:IsIn]->(b)
+*Created 218 relationships, statement executed in 1035 ms.
+
+USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///mathsTest_is_in.csv" AS row FIELDTERMINATOR  ','
+MATCH (b:Borough { id: row.boroughId}),(m:MathsResult { id: row.mathsTestId})
+CREATE (m)-[:IsIn]->(b)
+*Created 490 relationships, statement executed in 660 ms.
+
+USING PERIODIC COMMIT 500
+LOAD CSV WITH HEADERS FROM "file:///population_is_in.csv" AS row FIELDTERMINATOR  ','
+MATCH (b:Borough { id: row.boroughId}),(p:Population { id: row.populationId})
+CREATE (p)-[:IsIn]->(b)
+*Created 390 relationships, statement executed in 478 ms.
