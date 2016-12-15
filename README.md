@@ -1,2 +1,1 @@
-# NoSQL_NY_project
-# NoSQL_NY_project
+# Please read the report.pdf 
